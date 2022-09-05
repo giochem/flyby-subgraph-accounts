@@ -1,0 +1,50 @@
+extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
+
+extend type Query {
+  account(id: ID!): Account
+  accounts(roles: [String]): [Account]
+}
+
+extend type Mutation {
+  login(account: AccountInput!): AccountResponse!
+  newTourist(account: AccountInput!): AccountResponse!
+  customAccount(account: AccountInput!): AccountResponse!
+  updateAccount(id: ID!, account: AccountInput!): AccountEditResponse!
+  deleteAccount(id: ID!): AccountEditResponse!
+}
+
+type Account @key(fields: "id") {
+  id: ID!
+  email: String!
+  phone: Int
+  roles: [String]
+  permissions: [String]
+}
+input AccountInput {
+  email: String
+  password: String
+  phone: Int
+  roles: [String]
+  permissions: [String]
+}
+
+type AccountResponse {
+  "Similar to HTTP status code, represents the status of the mutation"
+  code: Int!
+  "Indicates whether the mutation was successful"
+  success: Boolean!
+  "Human-readable message for the UI"
+  message: String!
+
+  token: String
+}
+type AccountEditResponse {
+  "Similar to HTTP status code, represents the status of the mutation"
+  code: Int!
+  "Indicates whether the mutation was successful"
+  success: Boolean!
+  "Human-readable message for the UI"
+  message: String!
+
+  account: Account
+}
